@@ -179,16 +179,19 @@ public class TideCalculator {
             fx = calculateTideDerivates(x);
 
             // Is the root (sign change in the derivate) in the interval a...x or in x...b
-            if (fa[1] * fx[1] < 0)
+            if (fa[1] * fx[1] < 0) {
                 b = x;
-            else
+                fb = fx.clone();
+            } else {
                 a = x;
+                fa = fx.clone();
+            }
 
             xn = x - (long) (fx[1] / fx[2]);
 
             // If xn outside a-b then revert to bisecting
             if (xn < a || xn > b) {
-                xn = (b - a) / 2;
+                xn = (a + b) / 2;
             }
 
             steps++;
