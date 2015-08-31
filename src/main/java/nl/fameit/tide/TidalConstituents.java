@@ -20,7 +20,7 @@ package nl.fameit.tide;
  * Contains the coordinates and values for the tidal constituents.
  */
 
-public class Constituents {
+public class TidalConstituents {
 // Also a Database entity => be carefull with changes
 
     /**
@@ -36,7 +36,7 @@ public class Constituents {
      */
     private ComplexFloat[] values;
 
-    private Constituents() {
+    private TidalConstituents() {
 
     }
 
@@ -46,7 +46,7 @@ public class Constituents {
      * @param coordinate     coordinate
      * @param nrConstituents the number of tidal constituents
      */
-    public Constituents(LatLon coordinate, int nrConstituents) {
+    public TidalConstituents(LatLon coordinate, int nrConstituents) {
         this.values = new ComplexFloat[nrConstituents];
         this.latitude = coordinate.lat;
         this.longitude = coordinate.lon;
@@ -55,11 +55,11 @@ public class Constituents {
     /**
      * Check if the constituents are zero (not properly initialized).
      *
-     * @param constituents constituents to check
+     * @param tidalConstituents constituents to check
      * @return true if the constituents are zero, false if they are properly initialized
      */
-    public static boolean isZero(Constituents constituents) {
-        return constituents == null || constituents.get(0) == null || constituents.get(0).isZero();
+    public static boolean isZero(TidalConstituents tidalConstituents) {
+        return tidalConstituents == null || tidalConstituents.get(0) == null || tidalConstituents.get(0).isZero();
     }
 
     /**
@@ -85,9 +85,9 @@ public class Constituents {
     /**
      * Copy the constituents from the rhs to this object.
      *
-     * @param rhs {@link Constituents} to copy the values from
+     * @param rhs {@link TidalConstituents} to copy the values from
      */
-    public void copyConstituents(Constituents rhs) {
+    public void copyConstituents(TidalConstituents rhs) {
         for (int i = 0; i < rhs.values.length; i++) {
             this.values[i] = rhs.values[i];
         }
@@ -103,12 +103,12 @@ public class Constituents {
     }
 
     /**
-     * Calculate the distance between the coordinates of two {@link Constituents}.
+     * Calculate the distance between the coordinates of two {@link TidalConstituents}.
      *
      * @param rhs other object to calculate the distance to
      * @return distance in meters
      */
-    public double distance(Constituents rhs) {
+    public double distance(TidalConstituents rhs) {
         return getLatLon().distance(rhs.getLatLon());
     }
 

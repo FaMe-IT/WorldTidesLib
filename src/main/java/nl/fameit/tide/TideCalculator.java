@@ -17,6 +17,7 @@
 package nl.fameit.tide;
 
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -26,20 +27,37 @@ import java.util.TreeSet;
  */
 public class TideCalculator {
 
-    Constituents constituents;
+    TidalConstituents tidalConstituents;
     TidalConstant[] tidalConstants;
     EnumMap<TidalConstant, NodalCorrection> nodalCorrections;
 
     /**
      * Default constructor
      *
-     * @param constituents   values for the tidal constituents
-     * @param tidalConstants tidal constants (must be in the same order as the constituents)
+     * @param tidalConstituents values for the tidal constituents
+     * @param tidalConstants    tidal constants (must be in the same order as the constituents)
      */
-    public TideCalculator(final Constituents constituents, final TidalConstant[] tidalConstants) {
-        this.constituents = constituents;
+    public TideCalculator(final TidalConstituents tidalConstituents, final TidalConstant[] tidalConstants) {
+        this.tidalConstituents = tidalConstituents;
         this.tidalConstants = tidalConstants;
         this.nodalCorrections = null;
+    }
+
+    /**
+     * Default constructor
+     *
+     * @param tidalConstituents map of values for the tidal constituents
+     */
+    public TideCalculator(final EnumMap<TidalConstant, ComplexFloat> tidalConstituents) {
+        this.tidalConstants = new TidalConstant[tidalConstituents.size()];
+        this.tidalConstituents = new TidalConstituents(new LatLon(0, 0), tidalConstituents.size());
+
+        int i = 0;
+        for (Map.Entry<TidalConstant, ComplexFloat> constituent : tidalConstituents.entrySet()) {
+            this.tidalConstants[i] = constituent.getKey();
+            this.tidalConstituents.set(i, constituent.getValue());
+            i++;
+        }
     }
 
     /**
@@ -57,13 +75,13 @@ public class TideCalculator {
         double height = 0;
         double T = (timeInMillis - TidalConstant.epoch) / 1000; // T is time in seconds since January 1st, 1992
 
-        for (int i = 0; i < constituents.getValues().length; i++) {
-            ComplexFloat constituent = constituents.get(i);
+        for (int i = 0; i < tidalConstituents.getValues().length; i++) {
+            ComplexFloat constituent = tidalConstituents.get(i);
             TidalConstant k = tidalConstants[i];
             NodalCorrection nodalCorrection = nodalCorrections.get(k);
 
             double angle = T * k.omega + k.phase + nodalCorrection.u;
-            height += nodalCorrection.f * (constituent.re * Math.cos(angle) - constituents.get(i).im * Math.sin(angle));
+            height += nodalCorrection.f * (constituent.re * Math.cos(angle) - tidalConstituents.get(i).im * Math.sin(angle));
         }
         return height;
     }
@@ -81,8 +99,8 @@ public class TideCalculator {
         double d2height = 0;
         double T = ((double) timeInMillis - TidalConstant.epoch) / 1000.0; // T is time in seconds since January 1st, 1992
 
-        for (int i = 0; i < constituents.getValues().length; i++) {
-            ComplexFloat constituent = constituents.get(i);
+        for (int i = 0; i < tidalConstituents.getValues().length; i++) {
+            ComplexFloat constituent = tidalConstituents.get(i);
             TidalConstant k = tidalConstants[i];
             NodalCorrection nodalCorrection = nodalCorrections.get(k);
 
@@ -90,9 +108,9 @@ public class TideCalculator {
             double cosa = Math.cos(angle);
             double sina = Math.sin(angle);
 
-            height += nodalCorrection.f * (constituent.re * cosa - constituents.get(i).im * sina);
-            dheight += nodalCorrection.f * k.omega / 1000 * (-constituent.re * sina - constituents.get(i).im * cosa);
-            d2height += nodalCorrection.f * k.omega * k.omega / 1000 / 1000 * (-constituent.re * Math.cos(angle) + constituents.get(i).im * Math.sin(angle));
+            height += nodalCorrection.f * (constituent.re * cosa - tidalConstituents.get(i).im * sina);
+            dheight += nodalCorrection.f * k.omega / 1000 * (-constituent.re * sina - tidalConstituents.get(i).im * cosa);
+            d2height += nodalCorrection.f * k.omega * k.omega / 1000 / 1000 * (-constituent.re * Math.cos(angle) + tidalConstituents.get(i).im * Math.sin(angle));
         }
 
         return new double[]{height, dheight, d2height};
@@ -137,6 +155,11 @@ public class TideCalculator {
         @Override
         public int compareTo(final Extreme rhs) {
             return Long.valueOf(timeInMillis).compareTo(rhs.timeInMillis);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s: %tc %+.2f (%d %d)", this.maximum ? "High" : "Low ", this.timeInMillis, this.height, this.errorInMillis, this.steps);
         }
     }
 

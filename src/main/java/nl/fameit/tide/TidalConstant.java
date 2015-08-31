@@ -86,7 +86,7 @@ public enum TidalConstant {
     /**
      * Get a tidal constant by name.
      *
-     * @param name name of teh tidal constant
+     * @param name name of the tidal constant
      * @return tidal constant
      */
     public static TidalConstant valueFromName(String name) {
