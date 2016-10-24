@@ -1,5 +1,5 @@
 /*
-   Copyright © 2014-2015 FaMe IT, The Netherlands
+   Copyright © 2016 FaMe IT, The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,7 +20,13 @@ package nl.fameit.tide.lib;
  * Coordinate in the world as latitude and longitude
  */
 public class Coordinate {
+    /**
+     * longitude of the coordinate
+     */
     public final double longitude;
+    /**
+     * latitude of the coordinate
+     */
     public final double latitude;
 
     /**

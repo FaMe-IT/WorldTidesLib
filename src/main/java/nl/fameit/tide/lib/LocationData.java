@@ -276,7 +276,7 @@ public class LocationData implements Serializable {
     }
 
     /**
-     * Return the string representation of {@Link LocationData} (coordinate and optionally tide station name)
+     * Return the string representation of {@link LocationData} (coordinate and optionally tide station name)
      *
      * @return string representation of the location
      */
