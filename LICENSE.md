@@ -1,4 +1,4 @@
-   Copyright 2015 FaMe IT, The Netherlands
+   Copyright 2016 FaMe IT, The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
